@@ -11,9 +11,17 @@
 }
 
 body {
+  background-color: #f3f4f6;
+  color: #111827;
+  font-family: var(--font-tajawal);
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+:root.dark body {
   background-color: var(--color-ramadan-dark);
   color: white;
-  font-family: var(--font-tajawal);
 }
 
 /* Custom scrollbar for webkit */
@@ -22,14 +30,26 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #050A18; 
+  background: transparent; 
+}
+
+:root.dark ::-webkit-scrollbar-track {
+  background: #050A18;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1a233a; 
+  background: #cbd5e1; 
   border-radius: 4px;
 }
 
+:root.dark ::-webkit-scrollbar-thumb {
+  background: #1a233a;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #FFD700; 
+  background: #94a3b8; 
+}
+
+:root.dark ::-webkit-scrollbar-thumb:hover {
+  background: #FFD700;
 }
