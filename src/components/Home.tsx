@@ -3,14 +3,15 @@ import { recommendedDeeds, islamicStories, dailyHadiths, dailyAyahs, eidGreeting
 import confetti from 'canvas-confetti';
 import { useEffect, useState } from 'react';
 import { useRamadanDay } from '../hooks/useRamadanDay';
+import { useSettings } from '../hooks/useSettings';
+import { translations } from '../lib/translations';
 
 export default function Home() {
   const { day, loading } = useRamadanDay();
+  const { settings } = useSettings();
+  const t = translations[settings.language];
   const isEid = day === 100;
   
-  // Ensure day is within 1-30 range for demo purposes, or show "Not Ramadan" message
-  // If loading or day is null, we might want to show a loader or default.
-  // For now, let's default to 1 if loading to avoid crashes, or handle loading state.
   const currentDay = day || 1;
   const displayDay = Math.max(1, Math.min(30, currentDay));
   
@@ -53,7 +54,7 @@ export default function Home() {
 
   const copyGreeting = () => {
     navigator.clipboard.writeText(randomGreeting);
-    alert('تم نسخ النص!');
+    alert(t.copyText);
   };
 
   const refreshGreeting = () => {
@@ -69,18 +70,18 @@ export default function Home() {
       <div className="p-6 max-w-4xl mx-auto animate__animated animate__fadeIn space-y-8 text-center">
         <div className="py-12">
           <h1 className="text-6xl font-amiri text-ramadan-gold mb-6 animate__animated animate__pulse animate__infinite">
-            عيدكم مبارك
+            {t.eidMubarak}
           </h1>
-          <p className="text-2xl text-white font-tajawal mb-8">
-            تقبل الله منا ومنكم صالح الأعمال
+          <p className="text-2xl text-gray-800 dark:text-white font-tajawal mb-8">
+            {t.eidGreetingText}
           </p>
           
-          <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 max-w-2xl mx-auto shadow-[0_0_50px_rgba(255,215,0,0.2)]">
+          <div className="bg-white dark:bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-gray-200 dark:border-white/20 max-w-2xl mx-auto shadow-xl dark:shadow-[0_0_50px_rgba(255,215,0,0.2)]">
             <h3 className="text-xl font-bold text-ramadan-gold mb-4 font-tajawal">
               <i className="fa-solid fa-envelope-open-text ml-2"></i>
-              بطاقة معايدة
+              {t.eidGreetingCard}
             </h3>
-            <p className="text-xl text-white font-amiri leading-loose mb-6">
+            <p className="text-xl text-gray-800 dark:text-white font-amiri leading-loose mb-6">
               "{randomGreeting}"
             </p>
             
@@ -90,14 +91,14 @@ export default function Home() {
                 className="bg-ramadan-gold text-black px-6 py-2 rounded-full font-bold hover:bg-yellow-400 transition-colors flex items-center gap-2"
               >
                 <i className="fa-regular fa-copy"></i>
-                نسخ النص
+                {t.copyText}
               </button>
               <button 
                 onClick={refreshGreeting}
-                className="bg-white/10 text-white px-6 py-2 rounded-full font-bold hover:bg-white/20 transition-colors flex items-center gap-2"
+                className="bg-gray-200 dark:bg-white/10 text-gray-800 dark:text-white px-6 py-2 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-white/20 transition-colors flex items-center gap-2"
               >
                 <i className="fa-solid fa-rotate"></i>
-                اقتراح آخر
+                {t.anotherQuote}
               </button>
             </div>
           </div>
@@ -110,18 +111,18 @@ export default function Home() {
     <div className="p-6 max-w-4xl mx-auto animate__animated animate__fadeIn space-y-8">
       <div className="text-center mb-10">
         <h1 className="text-4xl md:text-5xl font-amiri text-ramadan-gold mb-4 leading-relaxed">
-          مرافق رمضان
+          {t.ramadanKareem}
         </h1>
-        <p className="text-xl text-gray-300 font-tajawal">
-          {isBefore ? 'ننتظر هلال الخير' : isAfter ? 'تقبل الله طاعتكم' : `اليوم ${day} من رمضان`}
+        <p className="text-xl text-gray-600 dark:text-gray-300 font-tajawal">
+          {isBefore ? t.waitingMoon : isAfter ? t.acceptDeeds : `${t.day} ${day} ${t.ofRamadan}`}
         </p>
       </div>
 
       {isBefore && (
-         <div className="text-center p-12 bg-ramadan-accent/20 rounded-2xl border border-white/5">
+         <div className="text-center p-12 bg-white dark:bg-ramadan-accent/20 rounded-2xl border border-gray-200 dark:border-white/5 shadow-md">
            <i className="fa-solid fa-hourglass-half text-4xl text-ramadan-gold mb-4"></i>
-           <p className="text-lg">اللهم بلغنا رمضان لا فاقدين ولا مفقودين</p>
-           <p className="text-sm text-gray-400 mt-2">ننتظر دخول الشهر الفضيل</p>
+           <p className="text-lg text-gray-800 dark:text-white">{t.ramadanSupplication}</p>
+           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{t.waitingRamadan}</p>
          </div>
       )}
 
@@ -130,36 +131,36 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-6">
             {/* Recommended Deed */}
             {deed && (
-              <div className="bg-gradient-to-l from-emerald-900/40 to-ramadan-accent/40 rounded-2xl p-6 border border-emerald-500/20 shadow-lg relative overflow-hidden">
+              <div className="bg-gradient-to-l from-emerald-100 to-white dark:from-emerald-900/40 dark:to-ramadan-accent/40 rounded-2xl p-6 border border-emerald-200 dark:border-emerald-500/20 shadow-lg relative overflow-hidden">
                  <div className="absolute top-0 left-0 p-4 opacity-10">
-                  <i className="fa-solid fa-hand-holding-heart text-8xl text-emerald-400"></i>
+                  <i className="fa-solid fa-hand-holding-heart text-8xl text-emerald-600 dark:text-emerald-400"></i>
                 </div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-3">
                     <i className="fa-solid fa-star text-ramadan-gold text-sm"></i>
-                    <span className="text-emerald-400 font-bold font-tajawal text-sm uppercase tracking-wider">عمل مستحب اليوم</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold font-tajawal text-sm uppercase tracking-wider">{t.recommendedDeed}</span>
                   </div>
-                  <h3 className="text-2xl font-amiri text-white mb-2">{deed.title}</h3>
-                  <p className="text-gray-300 font-tajawal leading-relaxed">{deed.description}</p>
+                  <h3 className="text-2xl font-amiri text-gray-900 dark:text-white mb-2">{deed.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 font-tajawal leading-relaxed">{deed.description}</p>
                 </div>
               </div>
             )}
 
             {/* Daily Hadith */}
             {hadith && (
-              <div className="bg-gradient-to-r from-amber-900/40 to-ramadan-accent/40 rounded-2xl p-6 border border-amber-500/20 shadow-lg relative overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-100 to-white dark:from-amber-900/40 dark:to-ramadan-accent/40 rounded-2xl p-6 border border-amber-200 dark:border-amber-500/20 shadow-lg relative overflow-hidden">
                  <div className="absolute top-0 left-0 p-4 opacity-10">
-                  <i className="fa-solid fa-scroll text-8xl text-amber-400"></i>
+                  <i className="fa-solid fa-scroll text-8xl text-amber-600 dark:text-amber-400"></i>
                 </div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-3">
-                    <i className="fa-solid fa-quote-right text-amber-400 text-sm"></i>
-                    <span className="text-amber-400 font-bold font-tajawal text-sm uppercase tracking-wider">حديث اليوم</span>
+                    <i className="fa-solid fa-quote-right text-amber-600 dark:text-amber-400 text-sm"></i>
+                    <span className="text-amber-600 dark:text-amber-400 font-bold font-tajawal text-sm uppercase tracking-wider">{t.hadithToday}</span>
                   </div>
-                  <p className="text-xl font-amiri text-white mb-3 leading-loose">
+                  <p className="text-xl font-amiri text-gray-900 dark:text-white mb-3 leading-loose">
                     {hadith.text}
                   </p>
-                  <p className="text-xs text-gray-400 font-tajawal text-left pl-2">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 font-tajawal text-left pl-2">
                     — {hadith.source}
                   </p>
                 </div>
@@ -170,21 +171,21 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-6">
             {/* Historical Event */}
             {event && (
-              <div className="bg-gradient-to-br from-ramadan-accent to-[#0a1128] rounded-2xl p-6 border border-ramadan-gold/20 shadow-xl relative overflow-hidden group hover:border-ramadan-gold/40 transition-all duration-500 h-full">
+              <div className="bg-gradient-to-br from-white to-gray-100 dark:from-ramadan-accent dark:to-[#0a1128] rounded-2xl p-6 border border-gray-200 dark:border-ramadan-gold/20 shadow-xl relative overflow-hidden group hover:border-ramadan-gold/40 transition-all duration-500 h-full">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <i className="fa-solid fa-clock-rotate-left text-8xl text-white"></i>
+                  <i className="fa-solid fa-clock-rotate-left text-8xl text-gray-900 dark:text-white"></i>
                 </div>
                 
                 <div className="relative z-10">
                   <span className="bg-ramadan-gold text-black text-xs font-bold px-3 py-1 rounded-full font-tajawal mb-4 inline-block">
-                    حدث في مثل هذا اليوم
+                    {t.historicalEvent}
                   </span>
                   
-                  <h2 className="text-2xl font-amiri text-white mb-4 leading-normal">
+                  <h2 className="text-2xl font-amiri text-gray-900 dark:text-white mb-4 leading-normal">
                     {event.title}
                   </h2>
                   
-                  <p className="text-gray-300 font-tajawal leading-loose text-justify text-sm">
+                  <p className="text-gray-600 dark:text-gray-300 font-tajawal leading-loose text-justify text-sm">
                     {event.event}
                   </p>
                 </div>
@@ -193,21 +194,21 @@ export default function Home() {
 
             {/* Islamic Story */}
             {story && (
-              <div className="bg-gradient-to-br from-[#1e1b4b] to-[#0a1128] rounded-2xl p-6 border border-indigo-500/20 shadow-xl relative overflow-hidden group hover:border-indigo-400/40 transition-all duration-500 h-full">
+              <div className="bg-gradient-to-br from-white to-indigo-50 dark:from-[#1e1b4b] dark:to-[#0a1128] rounded-2xl p-6 border border-indigo-100 dark:border-indigo-500/20 shadow-xl relative overflow-hidden group hover:border-indigo-400/40 transition-all duration-500 h-full">
                 <div className="absolute bottom-0 left-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <i className="fa-solid fa-book-open text-8xl text-indigo-300"></i>
+                  <i className="fa-solid fa-book-open text-8xl text-indigo-600 dark:text-indigo-300"></i>
                 </div>
                 
                 <div className="relative z-10">
-                  <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-bold px-3 py-1 rounded-full font-tajawal mb-4 inline-block">
-                    قصة وعبرة
+                  <span className="bg-indigo-100 dark:bg-indigo-500/20 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 text-xs font-bold px-3 py-1 rounded-full font-tajawal mb-4 inline-block">
+                    {t.islamicStory}
                   </span>
                   
-                  <h2 className="text-2xl font-amiri text-white mb-4 leading-normal">
+                  <h2 className="text-2xl font-amiri text-gray-900 dark:text-white mb-4 leading-normal">
                     {story.title}
                   </h2>
                   
-                  <p className="text-gray-300 font-tajawal leading-loose text-justify text-sm">
+                  <p className="text-gray-600 dark:text-gray-300 font-tajawal leading-loose text-justify text-sm">
                     {story.content}
                   </p>
                 </div>
@@ -217,19 +218,19 @@ export default function Home() {
 
           {/* Daily Ayah - Moved to bottom */}
           {ayah && (
-            <div className="bg-ramadan-accent/30 rounded-2xl p-8 border border-white/10 text-center relative overflow-hidden">
+            <div className="bg-white dark:bg-ramadan-accent/30 rounded-2xl p-8 border border-gray-200 dark:border-white/10 text-center relative overflow-hidden shadow-md">
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-5"></div>
               <div className="relative z-10">
                 <i className="fa-solid fa-quran text-3xl text-ramadan-gold mb-4 block"></i>
-                <p className="text-2xl md:text-3xl font-amiri text-white mb-4 leading-loose">
+                <p className="text-2xl md:text-3xl font-amiri text-gray-900 dark:text-white mb-4 leading-loose">
                   ﴾ {ayah.text} ﴿
                 </p>
                 <p className="text-sm text-ramadan-gold font-tajawal mb-6 block">
                   {ayah.surah}
                 </p>
-                <div className="bg-white/5 inline-block px-6 py-3 rounded-xl border border-white/5">
-                  <span className="text-gray-400 text-xs block mb-1 font-tajawal">وقفة تدبر</span>
-                  <p className="text-gray-200 font-tajawal text-sm">{ayah.lesson}</p>
+                <div className="bg-gray-100 dark:bg-white/5 inline-block px-6 py-3 rounded-xl border border-gray-200 dark:border-white/5">
+                  <span className="text-gray-500 dark:text-gray-400 text-xs block mb-1 font-tajawal">{t.reflection}</span>
+                  <p className="text-gray-700 dark:text-gray-200 font-tajawal text-sm">{ayah.lesson}</p>
                 </div>
               </div>
             </div>
