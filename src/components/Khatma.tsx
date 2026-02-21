@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { db } from '../lib/db';
 import confetti from 'canvas-confetti';
-import { getRamadanDay } from '../lib/ramadan';
+import { useRamadanDay } from '../hooks/useRamadanDay';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export default function Khatma() {
   const [completedDays, setCompletedDays] = useState<number[]>([]);
-  const currentRamadanDay = getRamadanDay();
+  const { day } = useRamadanDay();
+  const currentRamadanDay = day || 1;
 
   useEffect(() => {
     const loadData = async () => {

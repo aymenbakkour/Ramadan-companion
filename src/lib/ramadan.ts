@@ -1,19 +1,47 @@
-import { differenceInDays, addDays, format, startOfDay } from 'date-fns';
+import { differenceInDays, startOfDay } from 'date-fns';
 
-// Ramadan Start Date: Feb 19, 2026
-export const RAMADAN_START_DATE = new Date('2026-02-19T00:00:00');
-
-export const getRamadanDay = (): number => {
-  const today = startOfDay(new Date());
-  const start = startOfDay(RAMADAN_START_DATE);
-  const diff = differenceInDays(today, start);
-  // Day 1 is the start date, so we add 1.
-  // If diff is negative, it's before Ramadan.
-  return diff + 1;
+// Helper to get Hijri date using Intl API
+export const getHijriDate = () => {
+  const date = new Date();
+  const options: Intl.DateTimeFormatOptions = {
+    calendar: 'islamic-umalqura',
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric'
+  };
+  
+  // Format: "M/D/Y" or "D/M/Y" depending on locale, but we can extract parts
+  const formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura', options);
+  const parts = formatter.formatToParts(date);
+  
+  const day = parseInt(parts.find(p => p.type === 'day')?.value || '1');
+  const month = parseInt(parts.find(p => p.type === 'month')?.value || '1');
+  const year = parseInt(parts.find(p => p.type === 'year')?.value || '1447');
+  
+  return { day, month, year };
 };
 
-export const getGregorianDateForRamadanDay = (day: number): Date => {
-  return addDays(RAMADAN_START_DATE, day - 1);
+export const getRamadanDay = (): number => {
+  const { day, month } = getHijriDate();
+  
+  // Ramadan is the 9th month
+  if (month === 9) {
+    return day;
+  }
+  
+  // Shawwal is the 10th month. If it's 1st Shawwal, it's Eid.
+  // We'll return 100 for Eid to distinguish it.
+  if (month === 10 && day === 1) {
+    return 100; // Eid Code
+  }
+  
+  // Before Ramadan (Months 1-8)
+  if (month < 9) {
+    return -1;
+  }
+  
+  // After Ramadan (Months 10-12, excluding 1st Shawwal which is handled above)
+  return 31;
 };
 
 export const ramadanEvents = [
@@ -81,3 +109,4 @@ export const quranJuz = [
   { juz: 29, surahs: "الملك - المرسلات (50)", dua: "اللهم اجعلنا من عتقاء شهر رمضان" },
   { juz: 30, surahs: "النبأ - الناس", dua: "اللهم تقبل منا إنك أنت السميع العليم" },
 ];
+

@@ -1,8 +1,10 @@
-import { getRamadanDay, quranJuz } from '../lib/ramadan';
+import { quranJuz } from '../lib/ramadan';
+import { useRamadanDay } from '../hooks/useRamadanDay';
 
 export default function Quran() {
-  const day = getRamadanDay();
-  const displayDay = Math.max(1, Math.min(30, day));
+  const { day } = useRamadanDay();
+  const currentRamadanDay = day || 1;
+  const displayDay = Math.max(1, Math.min(30, currentRamadanDay));
   const juzData = quranJuz.find(j => j.juz === displayDay);
 
   return (

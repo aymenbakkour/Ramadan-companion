@@ -1,18 +1,110 @@
-import { getRamadanDay, ramadanEvents } from '../lib/ramadan';
-import { recommendedDeeds, islamicStories, dailyHadiths, dailyAyahs } from '../lib/content';
+import { ramadanEvents } from '../lib/ramadan';
+import { recommendedDeeds, islamicStories, dailyHadiths, dailyAyahs, eidGreetings } from '../lib/content';
+import confetti from 'canvas-confetti';
+import { useEffect, useState } from 'react';
+import { useRamadanDay } from '../hooks/useRamadanDay';
 
 export default function Home() {
-  const day = getRamadanDay();
+  const { day, loading } = useRamadanDay();
+  const isEid = day === 100;
+  
   // Ensure day is within 1-30 range for demo purposes, or show "Not Ramadan" message
-  const displayDay = Math.max(1, Math.min(30, day));
+  // If loading or day is null, we might want to show a loader or default.
+  // For now, let's default to 1 if loading to avoid crashes, or handle loading state.
+  const currentDay = day || 1;
+  const displayDay = Math.max(1, Math.min(30, currentDay));
+  
   const event = ramadanEvents.find(e => e.day === displayDay);
   const deed = recommendedDeeds.find(d => d.day === displayDay);
   const story = islamicStories.find(s => s.day === displayDay);
   const hadith = dailyHadiths.find(h => h.day === displayDay);
   const ayah = dailyAyahs.find(a => a.day === displayDay);
   
-  const isBefore = day < 1;
-  const isAfter = day > 30;
+  const isBefore = day !== null && day < 1;
+  const isAfter = day !== null && day > 30 && !isEid;
+  
+  const [randomGreeting, setRandomGreeting] = useState(eidGreetings[0]);
+
+  useEffect(() => {
+    if (isEid) {
+      // Eid Confetti
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+      const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+      const interval: any = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+      }, 250);
+      
+      // Random greeting
+      setRandomGreeting(eidGreetings[Math.floor(Math.random() * eidGreetings.length)]);
+    }
+  }, [isEid]);
+
+  const copyGreeting = () => {
+    navigator.clipboard.writeText(randomGreeting);
+    alert('تم نسخ النص!');
+  };
+
+  const refreshGreeting = () => {
+    setRandomGreeting(eidGreetings[Math.floor(Math.random() * eidGreetings.length)]);
+  };
+
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen"><i className="fa-solid fa-circle-notch fa-spin text-3xl text-ramadan-gold"></i></div>;
+  }
+
+  if (isEid) {
+    return (
+      <div className="p-6 max-w-4xl mx-auto animate__animated animate__fadeIn space-y-8 text-center">
+        <div className="py-12">
+          <h1 className="text-6xl font-amiri text-ramadan-gold mb-6 animate__animated animate__pulse animate__infinite">
+            عيدكم مبارك
+          </h1>
+          <p className="text-2xl text-white font-tajawal mb-8">
+            تقبل الله منا ومنكم صالح الأعمال
+          </p>
+          
+          <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 max-w-2xl mx-auto shadow-[0_0_50px_rgba(255,215,0,0.2)]">
+            <h3 className="text-xl font-bold text-ramadan-gold mb-4 font-tajawal">
+              <i className="fa-solid fa-envelope-open-text ml-2"></i>
+              بطاقة معايدة
+            </h3>
+            <p className="text-xl text-white font-amiri leading-loose mb-6">
+              "{randomGreeting}"
+            </p>
+            
+            <div className="flex justify-center gap-4">
+              <button 
+                onClick={copyGreeting}
+                className="bg-ramadan-gold text-black px-6 py-2 rounded-full font-bold hover:bg-yellow-400 transition-colors flex items-center gap-2"
+              >
+                <i className="fa-regular fa-copy"></i>
+                نسخ النص
+              </button>
+              <button 
+                onClick={refreshGreeting}
+                className="bg-white/10 text-white px-6 py-2 rounded-full font-bold hover:bg-white/20 transition-colors flex items-center gap-2"
+              >
+                <i className="fa-solid fa-rotate"></i>
+                اقتراح آخر
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-4xl mx-auto animate__animated animate__fadeIn space-y-8">
@@ -21,7 +113,7 @@ export default function Home() {
           مرافق رمضان
         </h1>
         <p className="text-xl text-gray-300 font-tajawal">
-          {isBefore ? 'ننتظر هلال الخير' : isAfter ? 'تقبل الله طاعتكم' : `اليوم ${day} من رمضان ١٤٤٧`}
+          {isBefore ? 'ننتظر هلال الخير' : isAfter ? 'تقبل الله طاعتكم' : `اليوم ${day} من رمضان`}
         </p>
       </div>
 
@@ -29,7 +121,7 @@ export default function Home() {
          <div className="text-center p-12 bg-ramadan-accent/20 rounded-2xl border border-white/5">
            <i className="fa-solid fa-hourglass-half text-4xl text-ramadan-gold mb-4"></i>
            <p className="text-lg">اللهم بلغنا رمضان لا فاقدين ولا مفقودين</p>
-           <p className="text-sm text-gray-400 mt-2">يبدأ في 19 فبراير 2026</p>
+           <p className="text-sm text-gray-400 mt-2">ننتظر دخول الشهر الفضيل</p>
          </div>
       )}
 
@@ -74,26 +166,6 @@ export default function Home() {
               </div>
             )}
           </div>
-
-          {/* Daily Ayah */}
-          {ayah && (
-            <div className="bg-ramadan-accent/30 rounded-2xl p-8 border border-white/10 text-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-5"></div>
-              <div className="relative z-10">
-                <i className="fa-solid fa-quran text-3xl text-ramadan-gold mb-4 block"></i>
-                <p className="text-2xl md:text-3xl font-amiri text-white mb-4 leading-loose">
-                  ﴾ {ayah.text} ﴿
-                </p>
-                <p className="text-sm text-ramadan-gold font-tajawal mb-6 block">
-                  {ayah.surah}
-                </p>
-                <div className="bg-white/5 inline-block px-6 py-3 rounded-xl border border-white/5">
-                  <span className="text-gray-400 text-xs block mb-1 font-tajawal">وقفة تدبر</span>
-                  <p className="text-gray-200 font-tajawal text-sm">{ayah.lesson}</p>
-                </div>
-              </div>
-            </div>
-          )}
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* Historical Event */}
@@ -142,6 +214,26 @@ export default function Home() {
               </div>
             )}
           </div>
+
+          {/* Daily Ayah - Moved to bottom */}
+          {ayah && (
+            <div className="bg-ramadan-accent/30 rounded-2xl p-8 border border-white/10 text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')] opacity-5"></div>
+              <div className="relative z-10">
+                <i className="fa-solid fa-quran text-3xl text-ramadan-gold mb-4 block"></i>
+                <p className="text-2xl md:text-3xl font-amiri text-white mb-4 leading-loose">
+                  ﴾ {ayah.text} ﴿
+                </p>
+                <p className="text-sm text-ramadan-gold font-tajawal mb-6 block">
+                  {ayah.surah}
+                </p>
+                <div className="bg-white/5 inline-block px-6 py-3 rounded-xl border border-white/5">
+                  <span className="text-gray-400 text-xs block mb-1 font-tajawal">وقفة تدبر</span>
+                  <p className="text-gray-200 font-tajawal text-sm">{ayah.lesson}</p>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
