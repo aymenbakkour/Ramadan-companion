@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@import "animate.css";
+
+@theme {
+  --color-ramadan-dark: #050A18;
+  --color-ramadan-gold: #FFD700;
+  --color-ramadan-accent: #1a233a;
+  
+  --font-amiri: "Amiri", serif;
+  --font-tajawal: "Tajawal", sans-serif;
+}
+
+body {
+  background-color: var(--color-ramadan-dark);
+  color: white;
+  font-family: var(--font-tajawal);
+}
+
+/* Custom scrollbar for webkit */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #050A18; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a233a; 
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFD700; 
+}

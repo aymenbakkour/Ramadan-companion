@@ -1,0 +1,5 @@
+{
+  "name": "مرافق رمضان",
+  "description": "A spiritual companion app for Ramadan 2026 featuring prayer times, Quran tracking, and daily events.",
+  "requestFramePermissions": ["geolocation"]
+}
