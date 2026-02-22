@@ -10,6 +10,9 @@
   --font-tajawal: "Tajawal", sans-serif;
 }
 
+/* Force dark mode variant to work with .dark class */
+@variant dark (&:where(.dark, .dark *));
+
 body {
   background-color: #f3f4f6;
   color: #111827;

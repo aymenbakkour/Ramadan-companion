@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { ar, de } from 'date-fns/locale';
 import { useSettings } from '../hooks/useSettings';
 import { translations } from '../lib/translations';
+import { useRamadanDay } from '../hooks/useRamadanDay';
 
 interface Timings {
   Fajr: string;
@@ -65,6 +66,7 @@ export default function PrayerTimes() {
   const { settings } = useSettings();
   const { city, country } = settings.location;
   const t = translations[settings.language];
+  const { day: ramadanDay } = useRamadanDay();
 
   useEffect(() => {
     fetchTimes();
@@ -127,6 +129,17 @@ export default function PrayerTimes() {
     return map[name] || name;
   };
 
+  // Determine displayed Hijri date
+  const getHijriDisplay = () => {
+    if (ramadanDay && ramadanDay >= 1 && ramadanDay <= 30) {
+      return `${ramadanDay} ${t.ramadanMonth} ${hijri?.year}`;
+    } else if (ramadanDay === 100) {
+      return `1 ${t.shawwalMonth} ${hijri?.year}`;
+    }
+    // Fallback to API date
+    return `${hijri?.day} ${settings.language === 'ar' ? hijri?.month.ar : hijri?.month.en} ${hijri?.year}`;
+  };
+
   return (
     <div className="p-6 animate__animated animate__fadeIn">
       <div className="text-center mb-8">
@@ -139,12 +152,12 @@ export default function PrayerTimes() {
           <p className="text-[10px] text-gray-600 mt-1">{t.changeLocation}</p>
         </div>
         
-        <div className="mt-4 bg-ramadan-accent/30 inline-block px-6 py-2 rounded-full border border-white/5">
-          <span className="text-lg font-amiri text-white mx-2">
-            {hijri?.day} {settings.language === 'ar' ? hijri?.month.ar : hijri?.month.en} {hijri?.year}
+        <div className="mt-4 bg-white dark:bg-ramadan-accent/30 inline-block px-6 py-2 rounded-full border border-gray-200 dark:border-white/5 shadow-sm">
+          <span className="text-lg font-amiri text-gray-900 dark:text-white mx-2">
+            {getHijriDisplay()}
           </span>
-          <span className="text-gray-500">|</span>
-          <span className="text-lg font-tajawal text-gray-300 mx-2">
+          <span className="text-gray-400 dark:text-gray-500">|</span>
+          <span className="text-lg font-tajawal text-gray-600 dark:text-gray-300 mx-2">
             {format(new Date(), 'EEEE d MMMM', { locale: settings.language === 'ar' ? ar : de })}
           </span>
         </div>

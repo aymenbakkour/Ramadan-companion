@@ -112,7 +112,13 @@ export const translations = {
     // Quran
     quranDaily: "ورد القرآن اليومي",
     surahs: "السور",
-    juzDua: "دعاء الجزء"
+    juzDua: "دعاء الجزء",
+    ramadanMonth: "رمضان",
+    shawwalMonth: "شوال",
+    soon: "قريباً",
+    iftarTime: "وقت الإفطار",
+    iftarDuaTitle: "دعاء الإفطار",
+    iftarDuaNote: "تقبل الله صيامكم"
   },
   de: {
     settings: "Einstellungen",
@@ -227,6 +233,12 @@ export const translations = {
     // Quran
     quranDaily: "Täglicher Koran",
     surahs: "Suren",
-    juzDua: "Juz Dua"
+    juzDua: "Juz Dua",
+    ramadanMonth: "Ramadan",
+    shawwalMonth: "Shawwal",
+    soon: "Bald",
+    iftarTime: "Iftar Zeit",
+    iftarDuaTitle: "Iftar Dua",
+    iftarDuaNote: "Möge Allah dein Fasten annehmen"
   }
 };
