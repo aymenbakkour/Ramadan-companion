@@ -13,6 +13,7 @@ import { translations } from './lib/translations';
 import { format } from 'date-fns';
 import { ar, de } from 'date-fns/locale';
 import MaghribNotification from './components/MaghribNotification';
+import AdBanner from './components/AdBanner';
 
 type Tab = 'home' | 'quran' | 'khatma' | 'prayer' | 'tasbih' | 'zakat' | 'settings' | 'about';
 
@@ -122,8 +123,11 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-1 h-screen overflow-y-auto relative scroll-smooth pt-20 md:pt-0">
-        <div className="max-w-5xl mx-auto min-h-full">
-           {renderContent()}
+        <div className="max-w-5xl mx-auto min-h-full flex flex-col">
+           <div className="flex-1">
+             {renderContent()}
+           </div>
+           <AdBanner />
         </div>
       </main>
     </div>
