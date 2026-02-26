@@ -37,6 +37,16 @@ export default function PopupAdModal() {
     return () => clearInterval(timer);
   }, [isVisible]);
 
+  useEffect(() => {
+    if (countdown === 0) {
+      // Auto close after a short delay to let the user see it reached 0
+      const timeout = setTimeout(() => {
+        setIsVisible(false);
+      }, 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [countdown]);
+
   if (!isVisible) return null;
 
   return (
