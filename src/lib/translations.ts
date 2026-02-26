@@ -118,7 +118,10 @@ export const translations = {
     soon: "قريباً",
     iftarTime: "وقت الإفطار",
     iftarDuaTitle: "دعاء الإفطار",
-    iftarDuaNote: "تقبل الله صيامكم"
+    iftarDuaNote: "تقبل الله صيامكم",
+    sponsoredAd: "إعلان ممول",
+    skipAdIn: "تخطي الإعلان بعد",
+    skipAd: "تخطي الإعلان"
   },
   de: {
     settings: "Einstellungen",
@@ -239,6 +242,9 @@ export const translations = {
     soon: "Bald",
     iftarTime: "Iftar Zeit",
     iftarDuaTitle: "Iftar Dua",
-    iftarDuaNote: "Möge Allah dein Fasten annehmen"
+    iftarDuaNote: "Möge Allah dein Fasten annehmen",
+    sponsoredAd: "Gesponserte Anzeige",
+    skipAdIn: "Überspringen in",
+    skipAd: "Werbung überspringen"
   }
 };

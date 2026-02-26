@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { ar, de } from 'date-fns/locale';
 import MaghribNotification from './components/MaghribNotification';
 import AdBanner from './components/AdBanner';
+import PopupAdModal from './components/PopupAdModal';
 
 type Tab = 'home' | 'quran' | 'khatma' | 'prayer' | 'tasbih' | 'zakat' | 'settings' | 'about';
 
@@ -64,6 +65,7 @@ export default function App() {
   return (
     <div className={clsx("min-h-screen flex overflow-hidden transition-colors duration-300", "bg-gray-100 dark:bg-ramadan-dark text-gray-900 dark:text-white")} dir={settings.language === 'ar' ? 'rtl' : 'ltr'}>
       <MaghribNotification />
+      <PopupAdModal />
       {/* Mobile Header */}
       <div className={clsx("md:hidden fixed top-0 w-full backdrop-blur-md z-50 p-4 border-b flex justify-between items-center", "bg-white/90 dark:bg-ramadan-dark/90 border-gray-200 dark:border-white/5")}>
         <h1 className="text-xl font-amiri text-ramadan-gold">مرافق رمضان</h1>
